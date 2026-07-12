@@ -155,5 +155,5 @@ pipeline {
 
 ## 🔗 Related Links
 
-- GitHub: [github.com/deepbijwe](https://github.com/deepbijwe)
+- GitHub: [github.com/deepbijwe](https://github.com/deepbijwe/Jenkins-Projects/tree/main)
 - Portfolio: [deepbijwe.in](https://deepbijwe.in)
