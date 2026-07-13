@@ -21,7 +21,7 @@ pipeline {
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=onlinebookstore \
-                        -Dsonar.host.url=http://172.31.27.176:9000
+                        -Dsonar.host.url=http://<private_ip-of-sonarqube-server>:9000
                     '''
               }
            }
