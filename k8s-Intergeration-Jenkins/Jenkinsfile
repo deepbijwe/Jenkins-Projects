@@ -34,5 +34,12 @@ pipeline {
                 sh 'kubectl apply -f k8s-Intergeration-Jenkins/deployment.yaml'
             }
         }
+
+        stage ('check deployment')
+        {
+            steps {
+                sh 'kubectl get pods'
+            }
+        }
     }
 }
