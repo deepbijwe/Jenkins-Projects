@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Selected Folder') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/deepbijwe/Jenkins-Projects.git'
+                    ]],
+                    extensions: [[
+                        $class: 'SparseCheckoutPaths',
+                        sparseCheckoutPaths: [[
+                            path: 'k8s-Intergeration-Jenkins'
+                        ]]
+                    ]]
+                ])
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                sh 'ls -l'
+                sh 'ls -l k8s-Intergeration-Jenkins'
+            }
+        }
+
+
+        stage ('deployement')
+        {
+            steps {
+                sh 'kubectl apply -f k8s-Intergeration-Jenkins/deployment.yaml'
+            }
+        }
+    }
+}
