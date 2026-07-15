@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-        stage ('check deployment')
+        stage ('check deployment status')
         {
             steps {
                 sh 'kubectl get pods'
