@@ -32,6 +32,7 @@ pipeline {
         {
             steps {
                 sh 'kubectl apply -f k8s-Intergeration-Jenkins/deployment.yaml'
+                sh 'kubectl apply -f k8s-Intergeration-Jenkins/service.yaml'
             }
         }
 
