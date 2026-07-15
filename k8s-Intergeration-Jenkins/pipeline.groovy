@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Selected Folder') {
+        stage('Checkout Selected Folder from Git') {
             steps {
                 checkout([
                     $class: 'GitSCM',
