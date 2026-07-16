@@ -105,9 +105,9 @@ pipeline{
 
                         kubectl apply -f k8s/deployment.yaml
                         kubectl apply -f k8s/service.yaml
-                        kubectl get pods -o wide
+                        kubectl get pods
                         kubectl get deploy
-                        kubectl get svc
+                        kubectl get svc 
 
                         """
                     }
