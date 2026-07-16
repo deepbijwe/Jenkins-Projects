@@ -1,8 +1,8 @@
 pipeline{
     agent any
     environment {
-        DOCKER_REPO = "node-application"
-        DOCKER_USER = "deepbijwe"
+        DOCKER_REPO = "deepbijwe"
+        DOCKER_USER = "node-application"
         IMAGE_NAME = "node-app"
         CONTAINER_NAME = "node-container"
         AWS_REGION = "ap-south-1"
@@ -60,8 +60,8 @@ pipeline{
                     }
                 }
             }
-        stage('Docker push'){
-            steps{
+             stage('Docker push'){
+               steps{
                withCredentials([
                         usernamePassword(
                             credentialsId: 'Docker_Creds',
@@ -104,8 +104,27 @@ pipeline{
                         --name ${CLUSTER_NAME}
 
                         kubectl apply -f k8s/*
+                        kubectl get pods 
+                        kubectl get deploy
 
                         """
                     }
                 }
             }
+        }
+
+     post {
+
+                success {
+                    echo "Application deployed successfully to Amazon EKS."
+                }
+
+                failure {
+                    echo "Pipeline failed. Please check the logs."
+                }
+
+                always {
+                    cleanWs()
+                }
+            }
+} 
