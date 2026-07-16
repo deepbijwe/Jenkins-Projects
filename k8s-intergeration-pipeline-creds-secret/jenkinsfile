@@ -83,7 +83,7 @@ pipeline{
                 steps {
 
                     sh """
-                    sed -i 's|image: .*|image: ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}|'k8s/deployment.yaml
+                    sed -i "s|image: .*|image: ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}|" k8s/deployment.yaml
                     """
 
                     sh "cat k8s/deployment.yaml"
