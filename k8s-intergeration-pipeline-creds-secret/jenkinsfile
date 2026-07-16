@@ -9,7 +9,7 @@ pipeline{
         CLUSTER_NAME = "demo-ekscluster"
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout/clone') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/mayurmwagh/node-app.git'
