@@ -104,7 +104,7 @@ pipeline{
                         --name ${CLUSTER_NAME}
 
                         kubectl apply -f k8s/*
-                        kubectl get pods 
+                        kubectl get pods -o wide
                         kubectl get deploy
 
                         """
