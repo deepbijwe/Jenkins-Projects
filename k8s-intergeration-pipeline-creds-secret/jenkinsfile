@@ -103,7 +103,8 @@ pipeline{
                         --region ${AWS_REGION} \
                         --name ${CLUSTER_NAME}
 
-                        kubectl apply -f k8s/*
+                        kubectl apply -f k8s/deployment.yaml
+                        kubectl apply -f k8s/service.yaml
                         kubectl get pods -o wide
                         kubectl get deploy
 
