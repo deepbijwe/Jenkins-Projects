@@ -1,0 +1,111 @@
+pipeline{
+    agent any
+    environment {
+        DOCKER_REPO = "node-application"
+        DOCKER_USER = "deepbijwe"
+        IMAGE_NAME = "node-app"
+        CONTAINER_NAME = "node-container"
+        AWS_REGION = "ap-south-1"
+        CLUSTER_NAME = "demo-ekscluster"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/mayurmwagh/node-app.git'
+            }
+        }
+        stage('Verify Environment') {
+            steps {
+                sh '''
+                echo "Node Version:"
+                node -v
+
+                echo "NPM Version:"
+                npm -v
+
+                echo "Docker Version:"
+                docker --version
+                '''
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install' 
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                docker build -t ${DOCKER_REPO}:${BUILD_NUMBER} .
+                ''' 
+            }
+        }
+        stage('Docker login'){
+            steps{
+               withCredentials([
+                        usernamePassword(
+                            credentialsId: 'Docker_Creds',
+                            usernameVariable: 'DOCKER_USERNAME',
+                            passwordVariable: 'DOCKER_PASSWORD'
+                        )
+                    ]) 
+                    {
+                        sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
+                    }
+                }
+            }
+        stage('Docker push'){
+            steps{
+               withCredentials([
+                        usernamePassword(
+                            credentialsId: 'Docker_Creds',
+                            usernameVariable: 'DOCKER_USERNAME',
+                            passwordVariable: 'DOCKER_PASSWORD'
+                        )
+                    ]) 
+                    {
+                        sh '''
+                            docker tag ${DOCKER_REPO}:${BUILD_NUMBER} \
+                            ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}
+
+                            docker push ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}
+                        '''
+                    }
+                }
+            }
+            stage('Update Manifest') {
+                steps {
+
+                    sh """
+                    sed -i 's|image: .*|image: ${IMAGE_NAME}:${BUILD_NUMBER}|' k8s/deployment.yaml
+                    """
+
+                    sh "cat k8s/deployment.yaml"
+                }
+            }
+
+            stage('Configure EKS') {
+                steps {
+
+                    withCredentials([
+                        [$class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'AWS_Creds']
+                    ]) {
+
+                        sh """
+                        aws eks update-kubeconfig \
+                        --region ${AWS_REGION} \
+                        --name ${CLUSTER_NAME}
+
+                        kubectl apply -f k8s/*
+
+                        """
+                    }
+                }
+            }
