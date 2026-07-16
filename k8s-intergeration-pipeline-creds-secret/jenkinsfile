@@ -83,7 +83,7 @@ pipeline{
                 steps {
 
                     sh """
-                    sed -i 's|image: .*|image: ${IMAGE_NAME}:${BUILD_NUMBER}|' k8s/deployment.yaml
+                    sed -i 's|image: .*|image: ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}|'k8s/deployment.yaml
                     """
 
                     sh "cat k8s/deployment.yaml"
@@ -113,18 +113,5 @@ pipeline{
             }
         }
 
-     post {
-
-                success {
-                    echo "Application deployed successfully to Amazon EKS."
-                }
-
-                failure {
-                    echo "Pipeline failed. Please check the logs."
-                }
-
-                always {
-                    cleanWs()
-                }
-            }
+        
 } 
