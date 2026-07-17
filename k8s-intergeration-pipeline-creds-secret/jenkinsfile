@@ -108,7 +108,7 @@ pipeline{
                         kubectl get pods
                         kubectl get deploy
                         kubectl get svc 
-                        kubectl delete deploy nginx-deployment
+        
 
                         """
                     }
